@@ -22,13 +22,18 @@ textarea {
   padding: 8px;
   border-radius: 6px;
 }
-.submit-btn {
+.submit-btn{
   background: #d7263d;
   color: #fff;
   border: none;
   padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
+  
+}
+.button-group {
+  display: flex;
+  gap: 10px;
 }
 .solution-text {
   background: #202020;

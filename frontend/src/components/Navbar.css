@@ -123,7 +123,13 @@
   cursor: pointer;
   border: 2px solid #d7263d;
 }
-
+.priority_counts
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
 /* ===========================
        PROFILE POPUP OVERLAY
    =========================== */
@@ -133,7 +139,6 @@
   left: 0;
   width: 100%;
   height: 100%;
-
   background: transparent;
   z-index: 2000;
 }
@@ -173,7 +178,7 @@
 /* ===========================
        CLOSE BUTTON
    =========================== */
-.close_btn {
+.close_btn ,.close_btn2{
   background: #d7263d;
   border: none;
   padding: 6px 12px;
@@ -183,7 +188,15 @@
   cursor: pointer;
   transition: 0.2s;
 }
-
+.two-items {
+  display: flex;
+  gap: 130px;
+}
+.close_btn2 a
+{
+text-decoration: none;
+color: white;
+}
 .close_btn:hover {
   background: #b71d34;
 }

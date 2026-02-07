@@ -2,9 +2,48 @@ const express = require("express");
 const cors = require("cors");
 const db = require("./db");
 const bcrypt = require("bcrypt");
+const { exec } = require("child_process");
+const path = require("path");
+require("dotenv").config();
 const app = express();
+const multer = require("multer");
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/developer"); // 👈 YOUR folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname); // keep original name
+  }
+});
+const storage2 = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads"); // 👈 YOUR folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname); // keep original name
+  }
+});
+
+const upload = multer({ storage });
+const upload2 = multer({ storage: storage2 });
+app.post("/upload-dev-file", upload.single("file"), (req, res) => {
+  res.json({
+    message: "File stored successfully",
+    fileName: req.file.filename,
+    filePath: `uploads/developer/${req.file.filename}`
+  });
+});
+app.post("/upload-dev-files", upload2.single("file"), (req, res) => {
+  res.json({
+    message: "File stored successfully",
+    fileName: req.file.filename,
+    filePath: `uploads/${req.file.filename}`
+  });
+});
+
 app.get('/show', (req, res) => {
   db.query('SELECT * FROM tickets', (err, results) => {
     if (err) {
@@ -42,6 +81,27 @@ app.post('/show-post',async(req,res)=>
         {
             res.send("data inserted");
         }                   
+    });                 
+});
+app.post('/admin-home',async(req,res)=>
+{
+    const id=req.body.id;
+    const name=req.body.name;
+    const client=req.body.client;
+    const points=req.body.points;
+    const problem=req.body.problem;
+    const priority=req.body.priority;
+    const q="insert into tickets(id,name,client,points,problem,priority) values(?,?,?,?,?,?)";
+    db.query(q,[id,name,client,points,problem,priority],(err,data)=>
+    {
+        if(err)
+        {
+            console.log("error occurred",err);
+        }
+        else
+        {
+            res.send("data inserted");
+        } 
     });                 
 });
 app.delete('/show-post', async(req, res) => {
@@ -116,6 +176,15 @@ app.post("/login", (req, res) => {
     }
   });
 });
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+app.get("/open-vscode", (req, res) => {
+  exec("code", (error) => {
+    if (error) {
+      return res.status(500).send("VS Code not found");
+    }
+    res.send("VS Code opened");
+  });
+});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

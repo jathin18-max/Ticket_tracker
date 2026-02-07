@@ -1,5 +1,5 @@
 
-import "./Completed.css";
+import "./completed.css"
 import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 
@@ -7,7 +7,7 @@ export default function Completed({ points}) {
   const [completed, setCompleted] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/completed")
+    fetch(`${import.meta.env.VITE_API_URL}/completed`)
       .then(res => res.json())
       .then(data => setCompleted(data));
   }, []);
@@ -27,6 +27,10 @@ export default function Completed({ points}) {
                 <div>Problem: <b>{t.name}</b></div>
                 <div>Client:<b> {t.client}</b></div>
                 <div>{t.points} pts</div>
+                <div>
+                <button className="submit-btn" onClick={()=>{window.open(`${import.meta.env.VITE_API_URL}/uploads/ticket_${6}.pdf`);}}>Problem</button>
+                <button className="submit-btn" onClick={()=>{window.open(`${import.meta.env.VITE_API_URL}/uploads/developer/ticket_${7}.pdf`);}}>File Report</button>
+                </div>
               </div>
               <div className="completed-body">
                 <div className="problem-box">{t.problem}</div>

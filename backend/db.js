@@ -1,9 +1,10 @@
+require('dotenv').config();
 const mysql = require('mysql');
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
-  database: 'ticket_tracker'
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'root',
+  database: process.env.DB_NAME || 'ticket_tracker'
 });
 connection.connect((err) => {
   if (err) {

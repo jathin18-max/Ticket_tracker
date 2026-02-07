@@ -6,17 +6,30 @@ import TicketInfo from "./pages/TicketInfo";
 import Completed from "./pages/completed";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import AdminCompleted from "./pages/Admincompleted";
+import AdminHome from "./pages/adminhome";
+import AdminLogin from "./pages/AdminLogin";
+import StartingPage from "./pages/startingPage";
 export default function App() {
   const [points, setPoints] = useState(0);
   const [tickets, setTickets] = useState([]);
+  
+useEffect(() => {
+  if (localStorage.getItem("high") === null) {
+    localStorage.setItem("high", "0");
+    localStorage.setItem("medium", "0");
+    localStorage.setItem("low", "0");
+  }
+}, []);
+
   useEffect(() => {
-    fetch("http://localhost:5000/show")
+    fetch(`${import.meta.env.VITE_API_URL}/show`)
       .then(res => res.json())
       .then(tickets => setTickets(tickets));
       //console.log(tickets);
   }, [tickets]);
   useEffect(() => {
-    fetch("http://localhost:5000/show-points")
+    fetch(`${import.meta.env.VITE_API_URL}/show-points`)
       .then(res => res.json())
       .then(data => setPoints(data));
   }, [tickets]);
@@ -32,7 +45,11 @@ export default function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Login/>} />
+        <Route path="/" element={<StartingPage/>} />
+        <Route path="/Adminlogin" element={<AdminLogin />} />
+        <Route path="/Adminhome" element={<AdminHome />} />
+        <Route path="/Admincompleted" element={<AdminCompleted />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/Home" element={<Home tickets={filteredNotComplete}        
         points={points}
