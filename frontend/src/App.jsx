@@ -3,11 +3,11 @@ import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import Home from "./pages/Home";
 import TicketInfo from "./pages/TicketInfo";
-import Completed from "./pages/completed";
+import Completed from "./pages/Completed";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminCompleted from "./pages/Admincompleted";
-import AdminHome from "./pages/adminhome";
+import AdminHome from "./pages/Adminhome";
 import AdminLogin from "./pages/AdminLogin";
 import StartingPage from "./pages/StartingPage";
 export default function App() {
