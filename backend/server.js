@@ -35,7 +35,7 @@ app.use(cors({
 }));
 
 // ✅ IMPORTANT: Preflight support
-app.options("*", cors());
+app.options(/.*/, cors());
 
 /* =========================
    MIDDLEWARES
