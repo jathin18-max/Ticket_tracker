@@ -9,7 +9,7 @@ import Register from "./pages/Register";
 import AdminCompleted from "./pages/Admincompleted";
 import AdminHome from "./pages/adminhome";
 import AdminLogin from "./pages/AdminLogin";
-import StartingPage from "./pages/startingPage";
+import StartingPage from "./pages/StartingPage";
 export default function App() {
   const [points, setPoints] = useState(0);
   const [tickets, setTickets] = useState([]);
