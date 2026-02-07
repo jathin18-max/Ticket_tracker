@@ -1,5 +1,5 @@
 
-import "./completed.css"
+import "./Completed.css"
 import AdminNavbar from "../components/AdminNavbar";
 import { useState, useEffect } from "react";
 
