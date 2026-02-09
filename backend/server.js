@@ -2,17 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const db = require("./db");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt"); 
 const { exec } = require("child_process");
 const path = require("path");
 const multer = require("multer");
 
 const app = express();
-
-/* =========================
-   ✅ CORS CONFIG (FIXED)
-   ========================= */
-
 const allowedOrigins = [
   "http://localhost:5173",                 // local frontend
   "https://ticket-tracker-rebl.onrender.com" // render frontend
