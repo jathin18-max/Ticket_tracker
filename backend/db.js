@@ -81,4 +81,4 @@ process.on('SIGTERM', () => {
   });
 });
 
-module.exports = pool;
+module.exports = pool.promise();

@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const db = require("./db");
-const bcrypt = require("bcrypt"); 
+const bcrypt = require("bcrypt");
 const { exec } = require("child_process");
 const path = require("path");
 const multer = require("multer");
@@ -84,96 +84,92 @@ app.post("/upload-dev-files", upload2.single("file"), (req, res) => {
    TICKET ROUTES
    ========================= */
 
-app.get("/show", (req, res) => {
-  db.query("SELECT * FROM tickets", (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
+app.get("/show", async (req, res) => {
+  try {
+    const [results] = await db.query("SELECT * FROM tickets");
     res.json(results);
-  });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
-app.get("/completed", (req, res) => {
-  db.query("SELECT * FROM complete", (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
+app.get("/completed", async (req, res) => {
+  try {
+    const [results] = await db.query("SELECT * FROM complete");
     res.json(results);
-  });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
-app.post("/show-post", (req, res) => {
-  const { id, name, client, points, problem, solution } = req.body;
+app.post("/show-post", async (req, res) => {
+  try {
+    const { id, name, client, points, problem, solution } = req.body;
 
-  const q =
-    "INSERT INTO complete (id, name, client, points, problem, solution) VALUES (?, ?, ?, ?, ?, ?)";
+    const q =
+      "INSERT INTO complete (id, name, client, points, problem, solution) VALUES (?, ?, ?, ?, ?, ?)";
 
-  db.query(q, [id, name, client, points, problem, solution], (err) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Insert failed" });
-    }
+    await db.query(q, [id, name, client, points, problem, solution]);
     res.json({ message: "Data inserted" });
-  });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Insert failed" });
+  }
 });
 
-app.post("/admin-home", (req, res) => {
-  const { id, name, client, points, problem, priority } = req.body;
+app.post("/admin-home", async (req, res) => {
+  try {
+    const { id, name, client, points, problem, priority } = req.body;
 
-  const q =
-    "INSERT INTO tickets (id, name, client, points, problem, priority) VALUES (?, ?, ?, ?, ?, ?)";
+    const q =
+      "INSERT INTO tickets (id, name, client, points, problem, priority) VALUES (?, ?, ?, ?, ?, ?)";
 
-  db.query(q, [id, name, client, points, problem, priority], (err) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Insert failed" });
-    }
+    await db.query(q, [id, name, client, points, problem, priority]);
     res.json({ message: "Data inserted" });
-  });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Insert failed" });
+  }
 });
 
-app.delete("/show-post", (req, res) => {
-  const { id } = req.body;
+app.delete("/show-post", async (req, res) => {
+  try {
+    const { id } = req.body;
 
-  db.query("DELETE FROM tickets WHERE id = ?", [id], (err) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Delete failed" });
-    }
+    await db.query("DELETE FROM tickets WHERE id = ?", [id]);
     res.json({ message: "Ticket deleted successfully" });
-  });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Delete failed" });
+  }
 });
 
 /* =========================
    POINTS ROUTES
    ========================= */
 
-app.put("/show-points", (req, res) => {
-  const { points } = req.body;
+app.put("/show-points", async (req, res) => {
+  try {
+    const { points } = req.body;
 
-  db.query(
-    "UPDATE points SET point = point + ?",
-    [points],
-    (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: "Update failed" });
-      }
-      res.json({ message: "Points updated successfully" });
-    }
-  );
+    await db.query("UPDATE points SET point = point + ?", [points]);
+    res.json({ message: "Points updated successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Update failed" });
+  }
 });
 
-app.get("/show-points", (req, res) => {
-  db.query("SELECT point FROM points", (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Fetch failed" });
-    }
+app.get("/show-points", async (req, res) => {
+  try {
+    const [results] = await db.query("SELECT point FROM points");
     res.json(results.length > 0 ? results[0].point : 0);
-  });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Fetch failed" });
+  }
 });
 
 /* =========================
@@ -181,56 +177,56 @@ app.get("/show-points", (req, res) => {
    ========================= */
 
 app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
+  try {
+    const { username, password } = req.body;
 
-  db.query(
-    "SELECT * FROM users WHERE username = ?",
-    [username],
-    async (err, result) => {
-      if (err) return res.json({ success: false, message: "DB Error" });
+    const [result] = await db.query(
+      "SELECT * FROM users WHERE username = ?",
+      [username]
+    );
 
-      if (result.length > 0) {
-        return res.json({ success: false, message: "User already exists" });
-      }
-
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      db.query(
-        "INSERT INTO users (username, password) VALUES (?, ?)",
-        [username, hashedPassword],
-        (err) => {
-          if (err)
-            return res.json({ success: false, message: "Insert failed" });
-
-          res.json({ success: true, message: "Registration successful" });
-        }
-      );
+    if (result.length > 0) {
+      return res.json({ success: false, message: "User already exists" });
     }
-  );
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await db.query(
+      "INSERT INTO users (username, password) VALUES (?, ?)",
+      [username, hashedPassword]
+    );
+
+    res.json({ success: true, message: "Registration successful" });
+  } catch (err) {
+    console.error(err);
+    return res.json({ success: false, message: "DB Error" });
+  }
 });
 
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
+app.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
 
-  db.query(
-    "SELECT * FROM users WHERE username = ?",
-    [username],
-    async (err, result) => {
-      if (err) return res.json({ success: false, message: "DB Error" });
+    const [result] = await db.query(
+      "SELECT * FROM users WHERE username = ?",
+      [username]
+    );
 
-      if (result.length === 0) {
-        return res.json({ success: false, message: "User not found" });
-      }
-
-      const isMatch = await bcrypt.compare(password, result[0].password);
-
-      if (isMatch) {
-        res.json({ success: true, message: "Login success" });
-      } else {
-        res.json({ success: false, message: "Wrong password" });
-      }
+    if (result.length === 0) {
+      return res.json({ success: false, message: "User not found" });
     }
-  );
+
+    const isMatch = await bcrypt.compare(password, result[0].password);
+
+    if (isMatch) {
+      res.json({ success: true, message: "Login success" });
+    } else {
+      res.json({ success: false, message: "Wrong password" });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.json({ success: false, message: "DB Error" });
+  }
 });
 
 /* =========================
